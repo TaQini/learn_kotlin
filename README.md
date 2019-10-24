@@ -129,6 +129,29 @@ stringMapper("Android", { input ->
 
 ```
 
+### vararg - number of function args is varable
+```kotlin
+fun sum3plusDigit(a:Int, b:Int, c:Int, vararg otherInfo: Int):Int{
+    var sum = 0
+    sum += a + b + c
+    for(i in otherInfo){
+        sum += i
+    }
+    return sum
+}
+```
+
+### <T> - when type of args is unknow
+```kotlin
+fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
+    var str ="$tag"
+    for(i in otherInfo){
+        str = "$str${i.toString()}"
+    }
+    return str
+}
+```
+
 ## Classes
  ...
 

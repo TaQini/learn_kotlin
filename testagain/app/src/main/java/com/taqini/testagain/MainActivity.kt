@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.longToast
 import kotlinx.android.synthetic.main.activity_main.*
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,21 +65,44 @@ class MainActivity : AppCompatActivity() {
             var n:String? = null
             hello.text = "$n.length=${n?.length?:-1}"
             var l:Int = if (n!=null) n.length else -1
-            hello.text = "$n.length=$l\n" +
-                    "sum(1..9)=${sum3plusDigit(1,2,3,4,5,6,7,8,9)}\n" +
-                    "sum(1,2,3)=${sum3plusDigit(1,2,3)}"
+            var ll = listOf('a','2',1)
+            hello.text = "$n.length=$l\n"
+            hello.text = "${hello.text}sum(1..9)=${sum3plusDigit(1,2,3,4,5,6,7,8,9)}\n"
+            hello.text = "${hello.text}sum(1,2,3)=${sum3plusDigit(1,2,3)}\n"
+            hello.text = "${hello.text}${appendStrings("str=","abc",123,true,'c',null,"\n//--byAppendString")}\n"
+            for(i in ll){
+                hello.text = "${hello.text}$i\n"
+            }
             true
         }
+
     }
-    fun add10(n:Int):Int{
-        return n+10
-    }
-    fun sum3plusDigit(a:Int, b:Int, c:Int, vararg other: Int):Int{
-        var sum = 0
-        sum += a + b + c
-        for(i in other){
-            sum += i
+    inline fun <reified T : Number> setArrayStr(array:Array<T>) {
+        var str:String = "item in array are: "
+        for (item in array) {
+            str = "$str${item.toString()}, "
         }
-        return sum
+        hello.text = str
     }
+}
+
+fun add10(n:Int):Int{
+    return n+10
+}
+
+fun sum3plusDigit(a:Int, b:Int, c:Int, vararg otherInfo: Int):Int{
+    var sum = 0
+    sum += a + b + c
+    for(i in otherInfo){
+        sum += i
+    }
+    return sum
+}
+
+fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
+    var str ="$tag"
+    for(i in otherInfo){
+        str = "$str${i.toString()}"
+    }
+    return str
 }
