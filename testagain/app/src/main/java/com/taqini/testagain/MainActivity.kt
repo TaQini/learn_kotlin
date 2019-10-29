@@ -1,11 +1,18 @@
 package com.taqini.testagain
-import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import org.jetbrains.anko.toast
-import org.jetbrains.anko.longToast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.cos
 
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("SetTextI18n")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,14 +29,14 @@ class MainActivity : AppCompatActivity() {
         }
         var i = 0
         val s = "12345.678"
-        var a:IntArray = intArrayOf(1,2,3)
-        var b:MutableList<Int> = mutableListOf(1,2,4,8)
+        val a:IntArray = intArrayOf(1,2,3)
+        val b:MutableList<Int> = mutableListOf(1,2,4,8)
         val phone:List<String> = listOf("Oneplus 6", "iPhone 8", "Huawei P30")
         val marks:Map<String,Int> = mapOf("Biua" to 67, "Civa" to 89, "Diua" to 78)
         a[1] = 0
         button_ok.setOnLongClickListener{
             i += 1
-            var c:List<String> = s.split(".")
+            val c:List<String> = s.split(".")
             for(i in c) {
                 a[1] += add10(i.toInt())
             }
@@ -62,28 +69,74 @@ class MainActivity : AppCompatActivity() {
             count = (count + 1) % 12
         }
         button_ex.setOnLongClickListener {
-            var n:String? = null
+            val n:String? = null
             hello.text = "$n.length=${n?.length?:-1}"
-            var l:Int = if (n!=null) n.length else -1
-            var ll = listOf('a','2',1)
+            val l:Int = n?.length ?: -1
+            val ll = listOf('a','2',1)
             hello.text = "$n.length=$l\n"
             hello.text = "${hello.text}sum(1..9)=${sum3plusDigit(1,2,3,4,5,6,7,8,9)}\n"
             hello.text = "${hello.text}sum(1,2,3)=${sum3plusDigit(1,2,3)}\n"
             hello.text = "${hello.text}${appendStrings("str=","abc",123,true,'c',null,"\n//--byAppendString")}\n"
-            for(i in ll){
-                hello.text = "${hello.text}$i\n"
-            }
+            for(i in ll){ hello.text = "${hello.text}$i, " }
+            hello.text="${hello.text}\n"
+            hello.text="${hello.text}10!=${factorial(10)}\n"
+            hello.text="${hello.text}tailrec_func:${findFixPoint(0.5)}\n"
+            val text = arrayOf("How", "do", "you", "do", "I'm", "fine")
+            hello.text="${hello.text}the longest str: ${maxCustom(text) { a, b -> a.length > b.length}}\n"
+            hello.text="${hello.text}normal str sort: ${maxCustom(text) { a, b -> a>b}}\n"
+            hello.text="${hello.text}count:${stringMapper(hello.text as String) { input -> input.length+6 }}\n"
+            val array:Array<Int> = arrayOf(1,2,3,4)
+            hello.text="${hello.text}${setArrayStr(array)}\n"
+            array.swap(0,3)
+            hello.text="${hello.text}${setArrayStr(array)}\n"
+            date_area.text="${DateUtil.nowDateTime}\n"
             true
         }
-
-    }
-    inline fun <reified T : Number> setArrayStr(array:Array<T>) {
-        var str:String = "item in array are: "
-        for (item in array) {
-            str = "$str${item.toString()}, "
+        button_new.setOnClickListener {
+            val animal = Animal(this, "Chicken")
+            hello.text = "animal class init: \n${animal}\n"
+            val pig = AnimalSeparate(this, "pig")
+//            val dog = AnimalSeparate(this, "dog", 1)
+//            val huyoujin = AnimalSeparate(this, "pig", 0)
+            var monkey = WildAnimal("mokey", 1)
+            var piggy = WildAnimal("pig")
+//            hello.text = "${hello.text}${monkey.name} is ${if(monkey.sex==0) "male" else "female"}\n"
+//            hello.text = "${hello.text}${piggy.name} is ${if(piggy.sex==0) "male" else "female"}\n"
+//            hello.text = "${hello.text}${monkey.name} is ${monkey.sexName}\n"
+//            hello.text = "${hello.text}${piggy.name} is ${piggy.sexName}\n"
+            hello.text = "${hello.text}${monkey.getDesc("MKz")}\n"
+            hello.text = "${hello.text}${piggy.getDesc("PIGz")}\n"
         }
-        hello.text = str
     }
+}
+
+class Animal(context: Context, name: String){
+    init{
+        context.toast("this is a $name")
+    }
+}
+
+class AnimalSeparate{
+    constructor(context: Context, name: String){
+        context.toast("this is a $name")
+    }
+    constructor(context: Context,name: String,sex:Int){
+        val sexName = if (sex==0) "male" else "female"
+        context.toast("this is a $sexName $name")
+    }
+}
+
+class WildAnimal(var name:String, val sex:Int=0){
+    var sexName:String = if(sex==0) "male" else "female"
+    fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+}
+
+inline fun <reified T : Number> setArrayStr(array:Array<T>):String? {
+    var str = "array item: "
+    for (item in array) {
+        str = "$str$item, "
+    }
+    return str
 }
 
 fun add10(n:Int):Int{
@@ -105,4 +158,58 @@ fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
         str = "$str${i.toString()}"
     }
     return str
+}
+
+fun factorial(n:Int):Int = if (n <= 1) n else n*factorial(n-1)
+
+tailrec fun findFixPoint(x: Double = 1.0): Double = if (x == cos(x)) x else findFixPoint(cos(x))
+
+fun <T> maxCustom(array: Array<T>, greater: (T,T) -> Boolean):T?{
+    var max:T? = null
+    for(i in array){
+        if(max == null || greater(i,max)){
+            max = i
+        }
+    }
+    return max
+}
+
+fun stringMapper(str: String, mapper: (String) -> Int): Int {
+    // Invoke function
+    return mapper(str)
+}
+
+fun Array<Int>.swap(pos1: Int, pos2: Int){
+    this[pos1] = this[pos1] xor this[pos2]
+    this[pos2] = this[pos1] xor this[pos2]
+    this[pos1] = this[pos1] xor this[pos2]
+}
+
+object DateUtil {
+    val nowDateTime: String
+    get() {
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        return sdf.format(Date())
+    }
+    val nowDate: String
+        get() {
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
+            return sdf.format(Date())
+        }
+    val nowTime: String
+        get() {
+            val sdf = SimpleDateFormat("HH:mm:ss")
+            return sdf.format(Date())
+        }
+    val nowTimeDetail: String
+        get() {
+            val sdf = SimpleDateFormat("HH:mm:ss.SSS")
+            return sdf.format(Date())
+        }
+    fun getFormatTime(format: String=""): String {
+        val ft: String = format
+        val sdf = if (!ft.isEmpty()) SimpleDateFormat(ft)
+        else SimpleDateFormat("yyyyMMddHHmmss")
+        return sdf.format(Date())
+    }
 }

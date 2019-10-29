@@ -82,6 +82,17 @@ val answerString = generateAnswerString(42)
 
 ```
 
+### <T> - when type of args is unknow
+```kotlin
+fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
+    var str ="$tag"
+    for(i in otherInfo){
+        str = "$str${i.toString()}"
+    }
+    return str
+}
+```
+
 ### Simplifying function declarations
  - return if ... else
 ```kotlin
@@ -100,6 +111,18 @@ fun generateAnswerString(countThreshold: Int): String = if (count > countThresho
     } else {
         "The answer eludes me"
     }
+
+```
+
+ - function in one line
+```kotlin
+fun factorial(n:Int):Int = if (n <= 1) n else n*factorial(n-1)
+
+```
+
+### tail recursive functions
+```kotlin
+tailrec fun findFixPoint(x: Double = 1.0): Double = if (x == cos(x)) x else findFixPoint(cos(x))
 ```
 
 ### Anonymous functions
@@ -123,12 +146,24 @@ fun stringMapper(str: String, mapper: (String) -> Int): Int {
 }
 
 // call it
-stringMapper("Android", { input ->
-    input.length
-})
+stringMapper("Android") {input -> input.length}
 
 ```
+ - other
+```kotlin
+fun <T> maxCustom(array: Array<T>, greater: (T,T) -> Boolean):T?{
+    var max:T? = null
+    for(i in array){
+        if(max == null || greater(i,max)){
+            max = i
+        }
+    }
+    return max
+}
 
+// call it
+var text ="normal str sort: ${maxCustom(text) { a, b -> a.length > b.length}}\n"
+```
 ### vararg - number of function args is varable
 ```kotlin
 fun sum3plusDigit(a:Int, b:Int, c:Int, vararg otherInfo: Int):Int{
@@ -141,19 +176,49 @@ fun sum3plusDigit(a:Int, b:Int, c:Int, vararg otherInfo: Int):Int{
 }
 ```
 
-### <T> - when type of args is unknow
+### system fucntion extension
 ```kotlin
-fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
-    var str ="$tag"
-    for(i in otherInfo){
-        str = "$str${i.toString()}"
-    }
-    return str
+fun Array<Int>.swap(pos1: Int, pos2: Int){
+    this[pos1] = this[pos1] xor this[pos2]
+    this[pos2] = this[pos1] xor this[pos2]
+    this[pos1] = this[pos1] xor this[pos2]
 }
+
 ```
 
 ## Classes
- ...
+ - member in class
+```kotlin
+class WildAnimal(var name:String, val sex:Int=0){
+    var sexName:String = if(sex==0) "male" else "female"
+    fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+}
+
+// call
+var monkey = WildAnimal("mokey", 1)
+var piggy = WildAnimal("pig")
+hello.text = "${hello.text}${monkey.getDesc("MKz")}\n"
+hello.text = "${hello.text}${piggy.getDesc("PIGz")}\n"
+```
+
+ - 2 type of constructor 
+```kotlin
+class Animal(context: Context, name: String){
+    init{
+        context.toast("this is a $name")
+    }
+}
+
+class AnimalSeparate{
+    constructor(context: Context, name: String){
+        context.toast("this is a $name")
+    }
+    constructor(context: Context,name: String,sex:Int){
+        val sexName = if (sex==0) "male" else "female"
+        context.toast("this is a $sexName $name")
+    }
+}
+```
 
 ## Loop 
 ```
