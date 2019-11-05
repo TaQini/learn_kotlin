@@ -96,16 +96,20 @@ class MainActivity : AppCompatActivity() {
             val animal = Animal(this, "Chicken")
             hello.text = "animal class init: \n${animal}\n"
             val pig = AnimalSeparate(this, "pig")
-//            val dog = AnimalSeparate(this, "dog", 1)
-//            val huyoujin = AnimalSeparate(this, "pig", 0)
-            var monkey = WildAnimal("mokey", 1)
-            var piggy = WildAnimal("pig")
+            val dog = AnimalSeparate(this, "dog", 1)
+            var monkey = WildAnimalCompanion("monkey", WildAnimalCompanion.FEMALE)
+            var piggy = WildAnimalCompanion("pig")
 //            hello.text = "${hello.text}${monkey.name} is ${if(monkey.sex==0) "male" else "female"}\n"
 //            hello.text = "${hello.text}${piggy.name} is ${if(piggy.sex==0) "male" else "female"}\n"
 //            hello.text = "${hello.text}${monkey.name} is ${monkey.sexName}\n"
 //            hello.text = "${hello.text}${piggy.name} is ${piggy.sexName}\n"
             hello.text = "${hello.text}${monkey.getDesc("MKz")}\n"
             hello.text = "${hello.text}${piggy.getDesc("PIGz")}\n"
+            hello.text="${hello.text}[static] id of male is ${WildAnimalCompanion.judgeSex("male")}\n"
+//            WildAnimalCompanion.FEMALE
+            var tim=Tiger(name = "Tim", sex=WildAnimalCompanion.FEMALE)
+            hello.text = "${hello.text}${tim.getDesc("tim's home")}\n"
+
         }
     }
 }
@@ -126,9 +130,26 @@ class AnimalSeparate{
     }
 }
 
-class WildAnimal(var name:String, val sex:Int=0){
-    var sexName:String = if(sex==0) "male" else "female"
-    fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+open class WildAnimalCompanion(var name:String, sex:Int = MALE){
+    var sexName:String = if(sex==MALE) "male" else "female"
+    open fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+    companion object WildAnimal{
+        val MALE = 0
+        val FEMALE = 1
+        val UNKNOWN = -1
+        fun judgeSex(sexName: String):Int{
+            var sex:Int = when(sexName){
+                "male" -> MALE
+                "female" -> FEMALE
+                else -> UNKNOWN
+            }
+            return sex
+        }
+    }
+}
+
+class Tiger(name: String="tiger", sex:Int=MALE): WildAnimalCompanion(name,sex){
+    override fun getDesc(tag:String) = "I am $name ($sexName).\n"
 }
 
 inline fun <reified T : Number> setArrayStr(array:Array<T>):String? {

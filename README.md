@@ -220,8 +220,54 @@ class AnimalSeparate{
 }
 ```
 
-## Loop 
+### Companion object & static args
+```kotlin
+class WildAnimalCompanion(var name:String, sex:Int = MALE){
+    var sexName:String = if(sex==MALE) "male" else "female"
+    fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+    companion object WildAnimal{
+        val MALE = 0
+        val FEMALE = 1
+        val UNKNOWN = -1
+        fun judgeSex(sexName: String):Int{
+            var sex:Int = when(sexName){
+                "male" -> MALE
+                "female" -> FEMALE
+                else -> UNKNOWN
+            }
+            return sex
+        }
+    }
+}
+
+// call it
+val text = [static] id of male is ${WildAnimalCompanion.judgeSex("male")}\n"
+val number = WildAnimalCompanion.FEMALE
 ```
+
+### inherit
+ - class in kotlin is final, make class `open` first
+```kotlin
+open class WildAnimalCompanion(var name:String, sex:Int = MALE){...}
+
+class tiger(name: String="tiger", sex:Int=0):WildAnimalCompanion(name,sex){
+    //...
+}
+```
+ - more type of class: public(default), private, protected, internal
+ - override function (make the function open first)
+```kotlin
+open class WildAnimalCompanion(var name:String, sex:Int = MALE){
+    var sexName:String = if(sex==MALE) "male" else "female"
+    open fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
+}
+
+class Tiger(name: String="tiger", sex:Int=MALE): WildAnimalCompanion(name,sex){
+    override fun getDesc(tag:String) = "I am $name ($sexName).\n"
+}
+```
+## Loop 
+```kotlin
 val phone:List<String> = listOf("Oneplus 6", "iPhone 8", "Huawei P30")
 var desc = ""
 
