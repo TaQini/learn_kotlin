@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.cos
 
+@Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
 
@@ -95,10 +96,10 @@ class MainActivity : AppCompatActivity() {
         button_new.setOnClickListener {
             val animal = Animal(this, "Chicken")
             hello.text = "animal class init: \n${animal}\n"
-            val pig = AnimalSeparate(this, "pig")
-            val dog = AnimalSeparate(this, "dog", 1)
-            var monkey = WildAnimalCompanion("monkey", WildAnimalCompanion.FEMALE)
-            var piggy = WildAnimalCompanion("pig")
+//            val pig = AnimalSeparate(this, "pig")
+//            val dog = AnimalSeparate(this, "dog", 1)
+            val monkey = WildAnimalCompanion("monkey", WildAnimalCompanion.FEMALE)
+            val piggy = WildAnimalCompanion("pig")
 //            hello.text = "${hello.text}${monkey.name} is ${if(monkey.sex==0) "male" else "female"}\n"
 //            hello.text = "${hello.text}${piggy.name} is ${if(piggy.sex==0) "male" else "female"}\n"
 //            hello.text = "${hello.text}${monkey.name} is ${monkey.sexName}\n"
@@ -107,9 +108,19 @@ class MainActivity : AppCompatActivity() {
             hello.text = "${hello.text}${piggy.getDesc("PIGz")}\n"
             hello.text="${hello.text}[static] id of male is ${WildAnimalCompanion.judgeSex("male")}\n"
 //            WildAnimalCompanion.FEMALE
-            var tim=Tiger(name = "Tim", sex=WildAnimalCompanion.FEMALE)
+            val tim=Tiger(name = "Tim", sex=WildAnimalCompanion.FEMALE)
             hello.text = "${hello.text}${tim.getDesc("tim's home")}\n"
-
+            val cock=Cock()
+            hello.text = "${hello.text}${cock.callOut(7)}\n"
+            val hen=Hen()
+            hello.text = "${hello.text}${hen.callOut(8)}\n"
+            val goose=Goose()
+            hello.text = "${hello.text}" +
+                    "skill:\n" +
+                    "  ${goose.run()}\n" +
+                    "  ${goose.fly()}\n" +
+                    "  ${goose.swim()}\n" +
+                    "skilledSports: ${goose.skilledSports}\n"
         }
     }
 }
@@ -120,36 +131,59 @@ class Animal(context: Context, name: String){
     }
 }
 
-class AnimalSeparate{
-    constructor(context: Context, name: String){
-        context.toast("this is a $name")
-    }
-    constructor(context: Context,name: String,sex:Int){
-        val sexName = if (sex==0) "male" else "female"
-        context.toast("this is a $sexName $name")
-    }
-}
+//class AnimalSeparate{
+//    constructor(context: Context, name: String){
+//        context.toast("this is a $name")
+//    }
+//    constructor(context: Context,name: String,sex:Int){
+//        val sexName = if (sex==0) "male" else "female"
+//        context.toast("this is a $sexName $name")
+//    }
+//}
 
 open class WildAnimalCompanion(var name:String, sex:Int = MALE){
     var sexName:String = if(sex==MALE) "male" else "female"
     open fun getDesc(tag:String) = "welcome to $tag, this $name is $sexName"
     companion object WildAnimal{
-        val MALE = 0
-        val FEMALE = 1
-        val UNKNOWN = -1
+        const val MALE = 0
+        const val FEMALE = 1
+        private const val UNKNOWN = -1
         fun judgeSex(sexName: String):Int{
-            var sex:Int = when(sexName){
+            return when(sexName){
                 "male" -> MALE
                 "female" -> FEMALE
                 else -> UNKNOWN
             }
-            return sex
         }
     }
 }
 
 class Tiger(name: String="tiger", sex:Int=MALE): WildAnimalCompanion(name,sex){
     override fun getDesc(tag:String) = "I am $name ($sexName).\n"
+}
+
+abstract class Chicken(name: String, sex:Int, var voice:String) :WildAnimalCompanion(name,sex){
+    abstract fun callOut(times:Int):String
+}
+class Cock(name: String="chicken", sex: Int=MALE, voice: String="wo~wo~wo~"):Chicken(name, sex, voice){
+    override fun callOut(times: Int) = "the $sexName $name call out $voice $times times.\n"
+}
+class Hen(name: String="chicken", sex: Int=FEMALE, voice: String="ge~ge~ge~"):Chicken(name, sex, voice){
+    override fun callOut(times: Int) = "the $sexName $name call out $voice $times times.\n"
+}
+
+interface Behavior{
+    open abstract fun fly():String
+    fun swim():String
+    fun run():String = "most of animals can run, except fish..."
+    var skilledSports:String
+}
+
+class Goose(name: String = "goose", sex: Int = MALE):WildAnimalCompanion(name, sex),Behavior{
+    override fun fly(): String = "$name can fly but not far not high"
+    override fun swim(): String = "$name can swim well"
+//    override fun run(): String = super.run()
+    override var skilledSports: String = "swimming"
 }
 
 inline fun <reified T : Number> setArrayStr(array:Array<T>):String? {
@@ -174,7 +208,7 @@ fun sum3plusDigit(a:Int, b:Int, c:Int, vararg otherInfo: Int):Int{
 }
 
 fun <T> appendStrings(tag:String, vararg otherInfo:T?):String{
-    var str ="$tag"
+    var str = tag
     for(i in otherInfo){
         str = "$str${i.toString()}"
     }
@@ -208,29 +242,30 @@ fun Array<Int>.swap(pos1: Int, pos2: Int){
 
 object DateUtil {
     val nowDateTime: String
+    @SuppressLint("SimpleDateFormat")
     get() {
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         return sdf.format(Date())
     }
-    val nowDate: String
-        get() {
-            val sdf = SimpleDateFormat("yyyy-MM-dd")
-            return sdf.format(Date())
-        }
-    val nowTime: String
-        get() {
-            val sdf = SimpleDateFormat("HH:mm:ss")
-            return sdf.format(Date())
-        }
-    val nowTimeDetail: String
-        get() {
-            val sdf = SimpleDateFormat("HH:mm:ss.SSS")
-            return sdf.format(Date())
-        }
-    fun getFormatTime(format: String=""): String {
-        val ft: String = format
-        val sdf = if (!ft.isEmpty()) SimpleDateFormat(ft)
-        else SimpleDateFormat("yyyyMMddHHmmss")
-        return sdf.format(Date())
-    }
+//    val nowDate: String
+//        get() {
+//            val sdf = SimpleDateFormat("yyyy-MM-dd")
+//            return sdf.format(Date())
+//        }
+//    val nowTime: String
+//        get() {
+//            val sdf = SimpleDateFormat("HH:mm:ss")
+//            return sdf.format(Date())
+//        }
+//    val nowTimeDetail: String
+//        get() {
+//            val sdf = SimpleDateFormat("HH:mm:ss.SSS")
+//            return sdf.format(Date())
+//        }
+//    fun getFormatTime(format: String=""): String {
+//        val ft: String = format
+//        val sdf = if (!ft.isEmpty()) SimpleDateFormat(ft)
+//        else SimpleDateFormat("yyyyMMddHHmmss")
+//        return sdf.format(Date())
+//    }
 }

@@ -266,6 +266,55 @@ class Tiger(name: String="tiger", sex:Int=MALE): WildAnimalCompanion(name,sex){
     override fun getDesc(tag:String) = "I am $name ($sexName).\n"
 }
 ```
+
+### abstract class 
+```kotlin
+abstract class Chicken(name: String, sex:Int, var voice:String) :WildAnimalCompanion(name,sex){
+    abstract fun callOut(times:Int):String
+}
+class Cock(name: String="chicken", sex: Int=MALE, voice: String="wo~wo~wo~"):Chicken(name, sex, voice){
+    override fun callOut(times: Int) = "the $sexName $name call out $voice $times times.\n"
+}
+class Hen(name: String="chicken", sex: Int=FEMALE, voice: String="ge~ge~ge~"):Chicken(name, sex, voice){
+    override fun callOut(times: Int) = "the $sexName $name call out $voice $times times.\n"
+}
+
+//call it
+var cock=Cock()
+cock.callOut(7)
+var hen=Hen()
+hen.callOut(8)
+```
+
+### interface 
+ - use interface to complete multi-inherit
+ - no construstor function in interface
+ - function in interface are abstract defaultly
+ - e.g. View.OnClickListener, CompoundButton.OnCheckedChangeListener ...
+
+```kotlin
+interface Behavior{
+    open abstract fun fly():String
+    fun swim():String
+    fun run():String = "most of animals can run, except fish..."
+    var skilledSports:String
+}
+
+class Goose(name: String = "goose", sex: Int = MALE):WildAnimalCompanion(name, sex),Behavior{
+    override fun fly(): String = "$name can fly but not far not high"
+    override fun swim(): String = "$name can swim well"
+//    override fun run(): String = super.run()
+    override var skilledSports: String = "swimming"
+}
+
+//call it 
+val info = "skill:\n" +
+           "  ${goose.run()}\n" +
+           "  ${goose.fly()}\n" +
+           "  ${goose.swim()}\n" +
+           "skilledSports: ${goose.skilledSports}\n"
+```
+
 ## Loop 
 ```kotlin
 val phone:List<String> = listOf("Oneplus 6", "iPhone 8", "Huawei P30")
