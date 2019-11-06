@@ -411,7 +411,16 @@ text = "${text}season[$count]: ${when(season){
 ```
  - Data class
 ```kotlin
+data class Plant(var name:String, var stem:String, var leaf:String, var flower:String, var fruit:String, var seed:String) {}
 
+//call it
+var lotus = Plant("莲","莲藕","荷叶","荷花","莲蓬","莲子")
+var lotus2 = lotus.copy(flower = "莲花")
+//lotus2.flower = "莲花"
+hello.text = "${hello.text}lotus[${count%2}]: ${when(count%2){
+    0 -> lotus.toString()
+    else -> lotus2.toString()
+}}\n"
 ```
 ## Loop 
 ```kotlin
@@ -475,5 +484,6 @@ class MainActivity : AppCompatActivity() {
     }
     ...
 }
-
 ```
+
+
