@@ -245,7 +245,7 @@ val text = [static] id of male is ${WildAnimalCompanion.judgeSex("male")}\n"
 val number = WildAnimalCompanion.FEMALE
 ```
 
-### inherit
+### inheritance
  - class in kotlin is final, make class `open` first
 ```kotlin
 open class WildAnimalCompanion(var name:String, sex:Int = MALE){...}
@@ -287,7 +287,7 @@ hen.callOut(8)
 ```
 
 ### interface 
- - use interface to complete multi-inherit
+ - use interface to complete multi-inheritance
  - no construstor function in interface
  - function in interface are abstract defaultly
  - e.g. View.OnClickListener, CompoundButton.OnCheckedChangeListener ...
@@ -315,6 +315,104 @@ val info = "skill:\n" +
            "skilledSports: ${goose.skilledSports}\n"
 ```
 
+### Delegation
+```kotlin
+class BehaviorFly:Behavior{
+    override fun fly(): String = "I can fly~~~~"
+    override fun run(): String = "run? WHAT????"
+    override fun swim(): String = "I can't swim..."
+    override var skilledSports: String = "flying"
+}
+
+class BehaviorRun:Behavior{
+    override fun fly(): String = "Fly?? r u kidding?"
+    override fun run(): String = "run? YES!!"
+    override fun swim(): String = "I can't swim..."
+    override var skilledSports: String = "running"
+}
+
+class BehaviorSwim:Behavior{
+    override fun fly(): String = "I can not fly!"
+    override fun run(): String = "run? WELL..."
+    override fun swim(): String = "I like swimming!!"
+    override var skilledSports: String = "swimming"
+}
+
+// Delegation - use it by keyword 'by'
+class WildFowl(name:String, sex:Int, behavior:Behavior) : WildAnimalCompanion(name, sex), Behavior by behavior{
+}
+
+//call it
+val fowl = when(count){
+    0 -> WildFowl("penguin", WildAnimalCompanion.FEMALE, BehaviorSwim())
+    1 -> WildFowl("chicken",WildAnimalCompanion.MALE, BehaviorRun())
+    else -> WildFowl("wild goose",WildAnimalCompanion.MALE, BehaviorFly())
+}
+count = (count+1)%3
+val info:String = "${fowl.name}:\n  ${fowl.fly()}\n  ${fowl.swim()}\n  ${fowl.run()}\n"
+
+```
+### Other Class
+ - nested and inner class
+```kotlin
+class Tree(var treeColor:String){
+    fun getColor() = "This is a $treeColor tree"
+    class Flower(private var flowerColor:String){
+        fun getColor() = "This is a $flowerColor flower"
+    }
+    inner class Fruit (private var fruitColor:String){
+        fun getColor() = "There is a $fruitColor fruit on $treeColor tree"
+    }
+}
+
+//call it
+text = "nested class: ${Tree("green").getColor()} and ${Tree.Flower("red").getColor()}\n"
+text = "$text${Tree("blue").Fruit("black").getColor()}\n"
+```
+ - Enum class
+```kotlin
+enum class SeasonType(val seasonName: String) {
+    SPRING("spring"),
+    SUMMER("summer"),
+    AUTUMN("autumn"),
+    WINTER("winter")
+}
+
+//call it
+text = "${text}season: ${when(count++%4){
+    0 -> SeasonType.SPRING.seasonName
+    1 -> SeasonType.SUMMER.seasonName
+    2 -> SeasonType.AUTUMN.seasonName
+    else -> SeasonType.WINTER.seasonName
+}}"
+```
+ - Sealed class
+```kotlin
+sealed class SeasonSealed{
+    class Spring(var name:String):SeasonSealed()
+    class Summer(var name:String):SeasonSealed()
+    class Autumn(var name:String):SeasonSealed()
+    class Winter(var name:String):SeasonSealed()
+}
+
+//call it
+var season = when(count){
+    0 -> SeasonSealed.Spring("spring")
+    1 -> SeasonSealed.Summer("summer")
+    2 -> SeasonSealed.Autumn("autumn")
+    else -> SeasonSealed.Spring("winter")
+}
+text = "${text}season[$count]: ${when(season){
+    is SeasonSealed.Spring -> season.name
+    is SeasonSealed.Summer -> season.name
+    is SeasonSealed.Autumn -> season.name
+    is SeasonSealed.Winter -> season.name
+}}\n"
+```
+ - Data class
+```kotlin
+
+```
 ## Loop 
 ```kotlin
 val phone:List<String> = listOf("Oneplus 6", "iPhone 8", "Huawei P30")

@@ -121,7 +121,63 @@ class MainActivity : AppCompatActivity() {
                     "  ${goose.fly()}\n" +
                     "  ${goose.swim()}\n" +
                     "skilledSports: ${goose.skilledSports}\n"
+            val fowl = when(count){
+                0 -> WildFowl("penguin", WildAnimalCompanion.FEMALE, BehaviorSwim())
+                1 -> WildFowl("chicken",WildAnimalCompanion.MALE, BehaviorRun())
+                else -> WildFowl("wild goose",WildAnimalCompanion.MALE, BehaviorFly())
+            }
+            count = (count+1)%3
+            hello.text = "${hello.text}${fowl.name}:\n  ${fowl.fly()}\n  ${fowl.swim()}\n  ${fowl.run()}\n"
         }
+        button_new.setOnLongClickListener {
+            hello.text = "nested class: ${Tree("green").getColor()} and ${Tree.Flower("red").getColor()}\n"
+            hello.text = "${hello.text}${Tree("blue").Fruit("black").getColor()}\n"
+            hello.text = "${hello.text}season[$count]: ${when(count){
+                SeasonType.SPRING.ordinal -> SeasonType.SPRING.seasonName
+                SeasonType.SUMMER.ordinal -> SeasonType.SUMMER.seasonName
+                SeasonType.AUTUMN.ordinal -> SeasonType.AUTUMN.seasonName
+                else -> SeasonType.WINTER.seasonName
+            }}\n"
+            var season = when(count){
+                0 -> SeasonSealed.Spring("spring")
+                1 -> SeasonSealed.Summer("summer")
+                2 -> SeasonSealed.Autumn("autumn")
+                else -> SeasonSealed.Spring("winter")
+            }
+            hello.text = "${hello.text}season[$count]: ${when(season){
+                is SeasonSealed.Spring -> season.name
+                is SeasonSealed.Summer -> season.name
+                is SeasonSealed.Autumn -> season.name
+                is SeasonSealed.Winter -> season.name
+            }}\n"
+            count = (count+1)%4
+            true
+        }
+    }
+}
+
+enum class SeasonType(val seasonName: String) {
+    SPRING("spring"),
+    SUMMER("summer"),
+    AUTUMN("autumn"),
+    WINTER("winter")
+}
+
+sealed class SeasonSealed{
+    class Spring(var name:String):SeasonSealed()
+    class Summer(var name:String):SeasonSealed()
+    class Autumn(var name:String):SeasonSealed()
+    class Winter(var name:String):SeasonSealed()
+}
+
+// nested class and inner class
+class Tree(var treeColor:String){
+    fun getColor() = "This is a $treeColor tree"
+    class Flower(private var flowerColor:String){
+        fun getColor() = "This is a $flowerColor flower"
+    }
+    inner class Fruit (private var fruitColor:String){
+        fun getColor() = "There is a $fruitColor fruit on $treeColor tree"
     }
 }
 
@@ -131,15 +187,17 @@ class Animal(context: Context, name: String){
     }
 }
 
-//class AnimalSeparate{
-//    constructor(context: Context, name: String){
-//        context.toast("this is a $name")
-//    }
-//    constructor(context: Context,name: String,sex:Int){
-//        val sexName = if (sex==0) "male" else "female"
-//        context.toast("this is a $sexName $name")
-//    }
-//}
+/*
+class AnimalSeparate{
+constructor(context: Context, name: String){
+context.toast("this is a $name")
+}
+constructor(context: Context,name: String,sex:Int){
+val sexName = if (sex==0) "male" else "female"
+context.toast("this is a $sexName $name")
+}
+}
+*/
 
 open class WildAnimalCompanion(var name:String, sex:Int = MALE){
     var sexName:String = if(sex==MALE) "male" else "female"
@@ -173,10 +231,34 @@ class Hen(name: String="chicken", sex: Int=FEMALE, voice: String="ge~ge~ge~"):Ch
 }
 
 interface Behavior{
-    open abstract fun fly():String
+    fun fly():String
     fun swim():String
     fun run():String = "most of animals can run, except fish..."
     var skilledSports:String
+}
+
+class BehaviorFly:Behavior{
+    override fun fly(): String = "I can fly~~~~"
+    override fun run(): String = "run? WHAT????"
+    override fun swim(): String = "I can't swim..."
+    override var skilledSports: String = "flying"
+}
+
+class BehaviorRun:Behavior{
+    override fun fly(): String = "Fly?? r u kidding?"
+    override fun run(): String = "run? YES!!"
+    override fun swim(): String = "I can't swim..."
+    override var skilledSports: String = "running"
+}
+
+class BehaviorSwim:Behavior{
+    override fun fly(): String = "I can not fly!"
+    override fun run(): String = "run? WELL..."
+    override fun swim(): String = "I like swimming!!"
+    override var skilledSports: String = "swimming"
+}
+
+class WildFowl(name:String="fowl", sex:Int=MALE, behavior:Behavior=BehaviorRun()) : WildAnimalCompanion(name, sex), Behavior by behavior{
 }
 
 class Goose(name: String = "goose", sex: Int = MALE):WildAnimalCompanion(name, sex),Behavior{
@@ -247,25 +329,27 @@ object DateUtil {
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         return sdf.format(Date())
     }
-//    val nowDate: String
-//        get() {
-//            val sdf = SimpleDateFormat("yyyy-MM-dd")
-//            return sdf.format(Date())
-//        }
-//    val nowTime: String
-//        get() {
-//            val sdf = SimpleDateFormat("HH:mm:ss")
-//            return sdf.format(Date())
-//        }
-//    val nowTimeDetail: String
-//        get() {
-//            val sdf = SimpleDateFormat("HH:mm:ss.SSS")
-//            return sdf.format(Date())
-//        }
-//    fun getFormatTime(format: String=""): String {
-//        val ft: String = format
-//        val sdf = if (!ft.isEmpty()) SimpleDateFormat(ft)
-//        else SimpleDateFormat("yyyyMMddHHmmss")
-//        return sdf.format(Date())
-//    }
+    /*
+val nowDate: String
+get() {
+val sdf = SimpleDateFormat("yyyy-MM-dd")
+return sdf.format(Date())
+}
+val nowTime: String
+get() {
+val sdf = SimpleDateFormat("HH:mm:ss")
+return sdf.format(Date())
+}
+val nowTimeDetail: String
+get() {
+val sdf = SimpleDateFormat("HH:mm:ss.SSS")
+return sdf.format(Date())
+}
+fun getFormatTime(format: String=""): String {
+val ft: String = format
+val sdf = if (!ft.isEmpty()) SimpleDateFormat(ft)
+else SimpleDateFormat("yyyyMMddHHmmss")
+return sdf.format(Date())
+}
+*/
 }
