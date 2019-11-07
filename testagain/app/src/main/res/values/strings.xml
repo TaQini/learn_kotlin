@@ -4,4 +4,9 @@
     <string name="ex">Ex</string>
     <string name="New">new</string>
     <string name="name">Name</string>
+    <string name="test">test</string>
+    <string name="i_choose_banana">I Choose Banana</string>
+    <string name="juice">Juice</string>
+    <string name="coffee">Coffee</string>
+    <string name="order">order</string>
 </resources>

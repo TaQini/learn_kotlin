@@ -1,8 +1,10 @@
 package com.taqini.testagain
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.AsyncTask
 import android.os.Bundle
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.longToast
@@ -162,6 +164,26 @@ class MainActivity : AppCompatActivity() {
             hello.text="${hello.text}${River("Red","2333").getInfo()}\n"
             hello.text="${hello.text}${River("Blue",1234).getInfo()}\n"
             true
+        }
+        button_click.setOnLongClickListener {
+            toast("You long click activity ${(it as Button).text}")
+            true
+        }
+        checkBox_1.isChecked = true //set checked default
+        checkBox_1.setOnCheckedChangeListener { _, isChecked ->
+            toast("I ${if(isChecked) "like" else "hate"} banana!")
+        }
+        radioGroup_1.clearCheck()
+        radioGroup_1.setOnCheckedChangeListener { group, checkedId ->
+            toast("You choose ${findViewById<RadioButton>(checkedId).text}")
+        }
+        button_click.setOnClickListener {
+            if(radioGroup_1.checkedRadioButtonId != -1) {
+                val radio:RadioButton = findViewById(radioGroup_1.checkedRadioButtonId)
+                hello.text = "One cup of ${radio.text} ${if (checkBox_1.isChecked) "with banana" else ""} please."
+            }else{
+                toast("please choose something to drink.")
+            }
         }
     }
 }

@@ -485,5 +485,59 @@ class MainActivity : AppCompatActivity() {
     ...
 }
 ```
+## Activity
+ - Button, CheckBox
 
+### button
+ - click 
+```kotlin
+button_click.setOnClickListener {
+    //toast("You click activity ${(it as Button).text}")
+}
+```
+ - long click
+```kotlin
+button_click.setOnLongClickListener {
+    //toast("You long click activity ${(it as Button).text}")
+    true
+}
+```
+
+### CompoundButton
+- CompoundButton(checkBox, Switch, RadioButton)
+   - isChecked, isClickable, isEnabled, isFocusable
+   - isPressed, isLongClickable, isSelected
+
+### checkBox
+```kotlin
+checkBox_1.isChecked = true //set checked default
+checkBox_1.setOnCheckedChangeListener { _, isChecked ->
+    toast("I ${if(isChecked) "like" else "hate"} banana!")
+}
+```
+
+### RadioButton
+ - lots of RadioButton in one RadioGroup
+```kotlin
+radioGroup_1.clearCheck()
+radioGroup_1.setOnCheckedChangeListener { group, checkedId ->
+    toast("You choose ${findViewById<RadioButton>(checkedId).text}")
+}
+```
+
+- find checked radioButton by `findViewById`
+```kotlin
+button_click.setOnClickListener {
+    if(radioGroup_1.checkedRadioButtonId != -1) {
+        val radio:RadioButton = findViewById(radioGroup_1.checkedRadioButtonId)
+        hello.text = "One cup of ${radio.text} ${if (checkBox_1.isChecked) "with banana" else ""} please."
+    }else{
+        toast("please choose something to drink.")
+    }
+}
+```
+### layout
+ - LinearLayout(difficult to use,uncommend)
+ - RelativeLayout(not flexible)
+ - ConstraintLayout(recommend)
 
