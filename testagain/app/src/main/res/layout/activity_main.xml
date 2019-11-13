@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/cl_content"
     android:layout_height="match_parent"
     android:background="#eeffcc"
     tools:context=".MainActivity">
@@ -44,7 +45,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="84dp"
         android:layout_marginEnd="32dp"
-        android:text="Would you like somthong to drink?"
+        android:text="@string/would_you_like_somthong_to_drink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -106,5 +107,56 @@
             android:layout_height="wrap_content"
             android:text="@string/coffee" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/button_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/add_activity"
+        app:layout_constraintBottom_toTopOf="@+id/button_ok"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_mov1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/hard_move"
+        app:layout_constraintBottom_toTopOf="@+id/button_ex"
+        app:layout_constraintStart_toEndOf="@+id/button_add" />
+
+    <Button
+        android:id="@+id/button_mov2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/soft_move"
+        app:layout_constraintBottom_toTopOf="@+id/button_new"
+        app:layout_constraintStart_toEndOf="@+id/button_mov1" />
+
+    <TextView
+        android:id="@+id/text_xunshan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:background="#66ccff"
+        android:text="@string/xunshan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hello" />
+
+    <TextView
+        android:id="@+id/text_dawang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="#66ccff"
+        android:text="@string/dawang"
+        app:layout_constraintStart_toStartOf="@+id/text_xunshan"
+        app:layout_constraintTop_toBottomOf="@+id/text_xunshan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -541,3 +541,100 @@ button_click.setOnClickListener {
  - RelativeLayout(not flexible)
  - ConstraintLayout(recommend)
 
+### ConstraintSet
+ - add New View in kotlin 
+```kotlin
+    private var step1:Int = 0
+    private var lastViewId = 23333
+    @SuppressLint("SetTextI18n")
+    private fun addNewView(){
+        val margin: Int = dip(step1%320)
+        val tv = TextView(this)
+        tv.setBackgroundColor(Color.rgb(0,255,127))
+        tv.text = "Press to delete."
+        val set = ConstraintSet()
+        set.clear(lastViewId)
+        set.constrainWidth(lastViewId, ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.constrainHeight(lastViewId,ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.connect(lastViewId, ConstraintSet.START, cl_content.id, ConstraintSet.START, margin)
+        set.connect(lastViewId, ConstraintSet.TOP, cl_content.id, ConstraintSet.TOP, margin)
+        set.applyTo(cl_content)
+        tv.setOnLongClickListener {
+            cl_content.removeView(it)
+            true
+        }
+        lastViewId += 1000
+        tv.id = lastViewId
+        hello.text = "${hello.text}this tv.id is $lastViewId\n"
+        cl_content.addView(tv)
+        step1+=20
+    }
+
+// call it
+        button_add.setOnClickListener { addNewView() }
+```
+ - set View in kotlin by `connect`
+ - transition: `TransitionManager`
+```kotlin
+    var step2:Int = 0
+    private fun moveView(){
+        val margin: Int = dip(step2%320)
+        val set = ConstraintSet()
+        // clear all constraint
+        set.clear(text_xunshan.id)
+        // clone origin constraint
+        set.clone(cl_content)
+        set.constrainWidth(text_xunshan.id, ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.constrainHeight(text_xunshan.id,ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        // who move: text_xunshan.START
+        // move direct: to cl_content.START
+        // move step: margin
+        //
+        //          TOP
+        //           _
+        //  START   |_|  END
+        //
+        //         BOTTOM
+        //
+        set.connect(text_xunshan.id, ConstraintSet.START, cl_content.id, ConstraintSet.START, margin)
+        // set.connect(text_xunshan.id, ConstraintSet.END, cl_content.id, ConstraintSet.END, margin)
+        // set.connect(text_xunshan.id, ConstraintSet.BOTTOM, cl_content.id, ConstraintSet.BOTTOM, margin)
+        set.connect(text_xunshan.id, ConstraintSet.BOTTOM, cl_content.id, ConstraintSet.TOP, margin)
+        // set.connect(text_xunshan.id, ConstraintSet.TOP, cl_content.id, ConstraintSet.TOP, margin*2)
+        set.applyTo(cl_content)
+        step2+=20
+    }
+}
+
+// call it
+        button_mov1.setOnClickListener { moveView() }
+        button_mov2.setOnClickListener {
+            TransitionManager.beginDelayedTransition(cl_content)
+            moveView()
+        }
+```
+
+ - rolling text
+```kotlin
+    var bPause:Boolean = true
+    @SuppressLint("SetTextI18n")
+    private fun moveAuto(){
+        text_xunshan.text = "我溜了~hhhhhhhh~ByeBye~~"
+        text_xunshan.textSize = 17f
+        text_xunshan.width = 150
+        text_xunshan.setTextColor(Color.BLACK)
+        text_xunshan.setBackgroundColor(Color.WHITE)
+        // align left and center
+        text_xunshan.gravity = Gravity.LEFT or Gravity.CENTER
+        // rolling from left to right
+        text_xunshan.ellipsize = TextUtils.TruncateAt.MARQUEE
+        text_xunshan.isSingleLine = true
+        text_xunshan.setOnClickListener {
+            bPause = !bPause
+            text_xunshan.isFocusable = !bPause
+            text_xunshan.isFocusableInTouchMode = !bPause
+        }
+    }
+```
+
+

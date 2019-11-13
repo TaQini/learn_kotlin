@@ -9,4 +9,10 @@
     <string name="juice">Juice</string>
     <string name="coffee">Coffee</string>
     <string name="order">order</string>
+    <string name="would_you_like_somthong_to_drink">Would you like somthong to drink?</string>
+    <string name="add_activity">添加控件</string>
+    <string name="hard_move">僵硬移动</string>
+    <string name="soft_move">柔和移动</string>
+    <string name="xunshan">大王叫我来巡山</string>
+    <string name="dawang">大王：好好干活，不许偷懒</string>
 </resources>

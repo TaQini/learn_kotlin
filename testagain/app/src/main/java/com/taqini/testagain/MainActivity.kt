@@ -1,12 +1,19 @@
 package com.taqini.testagain
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
+import android.transition.TransitionManager
+import android.view.Gravity
 import android.widget.Button
 import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.dip
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
@@ -16,7 +23,6 @@ import kotlin.math.cos
 @Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -141,7 +147,7 @@ class MainActivity : AppCompatActivity() {
                 SeasonType.AUTUMN.ordinal -> SeasonType.AUTUMN.seasonName
                 else -> SeasonType.WINTER.seasonName
             }}\n"
-            var season = when(count){
+            val season = when(count){
                 0 -> SeasonSealed.Spring("spring")
                 1 -> SeasonSealed.Summer("summer")
                 2 -> SeasonSealed.Autumn("autumn")
@@ -154,8 +160,8 @@ class MainActivity : AppCompatActivity() {
                 is SeasonSealed.Winter -> season.name
             }}\n"
             count = (count+1)%4
-            var lotus = Plant("莲","莲藕","荷叶","荷花","莲蓬","莲子")
-            var lotus2 = lotus.copy(flower = "莲花")
+            val lotus = Plant("莲","莲藕","荷叶","荷花","莲蓬","莲子")
+            val lotus2 = lotus.copy(flower = "莲花")
             //lotus2.flower = "莲花"
             hello.text = "${hello.text}lotus[${count%2}]: ${when(count%2){
                 0 -> lotus.toString()
@@ -174,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             toast("I ${if(isChecked) "like" else "hate"} banana!")
         }
         radioGroup_1.clearCheck()
-        radioGroup_1.setOnCheckedChangeListener { group, checkedId ->
+        radioGroup_1.setOnCheckedChangeListener { _, checkedId ->
             toast("You choose ${findViewById<RadioButton>(checkedId).text}")
         }
         button_click.setOnClickListener {
@@ -185,12 +191,101 @@ class MainActivity : AppCompatActivity() {
                 toast("please choose something to drink.")
             }
         }
+        button_add.setOnClickListener { addNewView() }
+        button_mov1.setOnClickListener { moveView() }
+        button_mov2.setOnClickListener {
+            TransitionManager.beginDelayedTransition(cl_content)
+            moveView()
+        }
+        button_mov2.setOnLongClickListener {
+            moveAuto()
+            true
+        }
+    }
+
+
+    private var step1:Int = 0
+    private var lastViewId = 23333
+    @SuppressLint("SetTextI18n")
+    private fun addNewView(){
+        val margin: Int = dip(step1%320)
+        val tv = TextView(this)
+        tv.setBackgroundColor(Color.rgb(0,255,127))
+        tv.text = "Press to delete."
+        val set = ConstraintSet()
+        set.clear(lastViewId)
+        set.constrainWidth(lastViewId, ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.constrainHeight(lastViewId,ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.connect(lastViewId, ConstraintSet.START, cl_content.id, ConstraintSet.START, margin)
+        set.connect(lastViewId, ConstraintSet.TOP, cl_content.id, ConstraintSet.TOP, margin)
+        set.applyTo(cl_content)
+        tv.setOnLongClickListener {
+            cl_content.removeView(it)
+            true
+        }
+        lastViewId += 1000
+        tv.id = lastViewId
+        hello.text = "${hello.text}this tv.id is $lastViewId\n"
+        cl_content.addView(tv)
+        step1+=20
+    }
+
+    private var step2:Int = 0
+    private fun moveView(){
+        val margin: Int = dip(step2%320)
+        val set = ConstraintSet()
+        // clear all constraint
+        set.clear(text_xunshan.id)
+        // clone origin constraint
+        set.clone(cl_content)
+        set.constrainWidth(text_xunshan.id, ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        set.constrainHeight(text_xunshan.id,ConstraintLayout.LayoutParams. WRAP_CONTENT)
+        // who move: text_xunshan.START
+        // move direct: to cl_content.START
+        // move step: margin
+        //
+        //          TOP
+        //           _
+        //  START   |_|  END
+        //
+        //         BOTTOM
+        //
+        set.connect(text_xunshan.id, ConstraintSet.START, cl_content.id, ConstraintSet.START, margin)
+//        set.connect(text_xunshan.id, ConstraintSet.END, cl_content.id, ConstraintSet.END, margin)
+//        set.connect(text_xunshan.id, ConstraintSet.BOTTOM, cl_content.id, ConstraintSet.BOTTOM, margin)
+        set.connect(text_xunshan.id, ConstraintSet.BOTTOM, cl_content.id, ConstraintSet.TOP, margin)
+//        set.connect(text_xunshan.id, ConstraintSet.TOP, cl_content.id, ConstraintSet.TOP, margin*2)
+        set.applyTo(cl_content)
+        step2+=20
+    }
+
+    var bPause:Boolean = true
+    @SuppressLint("SetTextI18n")
+    private fun moveAuto(){
+        text_xunshan.text = "我溜了~hhhhhhhh~ByeBye~~"
+        text_xunshan.textSize = 17f
+        text_xunshan.width = 150
+        text_xunshan.setTextColor(Color.BLACK)
+        text_xunshan.setBackgroundColor(Color.WHITE)
+        // align left and center
+        text_xunshan.gravity = Gravity.LEFT or Gravity.CENTER
+        // when text is long use ellipsize,
+        // TruncateAt.MARQUEE -> text rolling from left to right
+        // TruncateAt.START or MIDDLE or END
+        text_xunshan.ellipsize = TextUtils.TruncateAt.MARQUEE
+        text_xunshan.isSingleLine = true
+        text_xunshan.setOnLongClickListener {
+            bPause = !bPause
+            text_xunshan.isFocusable = !bPause
+            text_xunshan.isFocusableInTouchMode = !bPause
+            true
+        }
     }
 }
 
-class River<T>(var name: String, var length:T){
+class River<T>(private var name: String, private var length:T){
     fun getInfo():String{
-        var unit=when(length){
+        val unit: String =when(length){
             is String -> "米"
             is Number -> "m"
             else -> ""
@@ -207,6 +302,7 @@ enum class SeasonType(val seasonName: String) {
 }
 
 data class Plant(var name:String, var stem:String, var leaf:String, var flower:String, var fruit:String, var seed:String) {
+    //nop
 }
 
 sealed class SeasonSealed{
@@ -305,6 +401,7 @@ class BehaviorSwim:Behavior{
 }
 
 class WildFowl(name:String="fowl", sex:Int=MALE, behavior:Behavior=BehaviorRun()) : WildAnimalCompanion(name, sex), Behavior by behavior{
+    //nop
 }
 
 class Goose(name: String = "goose", sex: Int = MALE):WildAnimalCompanion(name, sex),Behavior{
