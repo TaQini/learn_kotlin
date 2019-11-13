@@ -1,17 +1,20 @@
 package com.taqini.testagain
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
+import android.graphics.Color.*
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.transition.TransitionManager
-import android.view.Gravity
+import android.view.Gravity.*
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.widget.addTextChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.longToast
@@ -201,8 +204,25 @@ class MainActivity : AppCompatActivity() {
             moveAuto()
             true
         }
-    }
+//        et_text.inputType = InputType.TYPE_CLASS_TEXT
+//        et_text.inputType = InputType.TYPE_CLASS_DATETIME
+//        et_text.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+//        et_text.inputType = InputType.TYPE_TEXT_VARIATION_NORMAL
+//        et_text.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+//        et_text.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
 
+        iv_scale.setOnClickListener {
+            iv_scale.scaleType = ImageView.ScaleType.CENTER
+            et_text.inputType = InputType.TYPE_CLASS_DATETIME
+            hello.text = "${et_text.text}喵~"
+        }
+        iv_scale.setOnLongClickListener {
+            iv_scale.scaleType = ImageView.ScaleType.FIT_END
+            et_text.inputType = InputType.TYPE_CLASS_NUMBER
+            hello.text = "${et_text.text}呜~"
+            true
+        }
+    }
 
     private var step1:Int = 0
     private var lastViewId = 23333
@@ -210,7 +230,7 @@ class MainActivity : AppCompatActivity() {
     private fun addNewView(){
         val margin: Int = dip(step1%320)
         val tv = TextView(this)
-        tv.setBackgroundColor(Color.rgb(0,255,127))
+        tv.setBackgroundColor(rgb(0,255,127))
         tv.text = "Press to delete."
         val set = ConstraintSet()
         set.clear(lastViewId)
@@ -258,17 +278,16 @@ class MainActivity : AppCompatActivity() {
         set.applyTo(cl_content)
         step2+=20
     }
-
-    var bPause:Boolean = true
-    @SuppressLint("SetTextI18n")
+    private var bPause:Boolean = true
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     private fun moveAuto(){
         text_xunshan.text = "我溜了~hhhhhhhh~ByeBye~~"
         text_xunshan.textSize = 17f
         text_xunshan.width = 150
-        text_xunshan.setTextColor(Color.BLACK)
-        text_xunshan.setBackgroundColor(Color.WHITE)
+        text_xunshan.setTextColor(BLACK)
+        text_xunshan.setBackgroundColor(WHITE)
         // align left and center
-        text_xunshan.gravity = Gravity.LEFT or Gravity.CENTER
+        text_xunshan.gravity = LEFT or CENTER
         // when text is long use ellipsize,
         // TruncateAt.MARQUEE -> text rolling from left to right
         // TruncateAt.START or MIDDLE or END

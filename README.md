@@ -541,8 +541,8 @@ button_click.setOnClickListener {
  - RelativeLayout(not flexible)
  - ConstraintLayout(recommend)
 
-### ConstraintSet
- - add New View in kotlin 
+### TextView
+ - add New TextView in kotlin 
 ```kotlin
     private var step1:Int = 0
     private var lastViewId = 23333
@@ -573,7 +573,7 @@ button_click.setOnClickListener {
 // call it
         button_add.setOnClickListener { addNewView() }
 ```
- - set View in kotlin by `connect`
+ - set TextView in kotlin by `connect`
  - transition: `TransitionManager`
 ```kotlin
     var step2:Int = 0
@@ -637,4 +637,33 @@ button_click.setOnClickListener {
     }
 ```
 
+### ImageView
+```xml
+<ImageView
+    android:id="@+id/iv_scale"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:contentDescription="@string/black_cat"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/cat" />
+```
+
+```kotlin
+iv_scale.setOnClickListener {iv_scale.scaleType = ImageView.ScaleType.CENTER}
+iv_scale.setOnLongClickListener {iv_scale.scaleType = ImageView.ScaleType.FIT_END;true}
+```
+
+### EditText
+ - editable textview
+ - InputType: 6 diff types
+```kotlin
+hello.text = "${et_text.text}呜~"
+et_text.inputType = InputType.TYPE_CLASS_TEXT
+et_text.inputType = InputType.TYPE_CLASS_NUMBER
+et_text.inputType = InputType.TYPE_CLASS_DATETIME
+et_text.inputType = InputType.TYPE_TEXT_VARIATION_NORMAL
+et_text.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+et_text.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+```
 
